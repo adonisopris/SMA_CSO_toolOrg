@@ -1,0 +1,9 @@
+<resources>
+  <string name="app_name">Chiuitter</string>
+  <string name="type_some_text">Type some text ...</string>
+  <string name="chiuit_example">Iu, iu, iu, că repede mai fug anii iştea ...</string>
+    <string name="add_your_new_chiuit">Add your new chiuit</string>
+  <string name="check_action_icon_content_description">Check action icon</string>
+  <string name="send_action_icon_content_description">Send action icon</string>
+  <string name="edit_action_icon_content_description">Edit action icon</string>
+</resources>
