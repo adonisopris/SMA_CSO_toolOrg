@@ -5,8 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "tools")
 data class ToolEntity(
-    @PrimaryKey
-    val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
     val type: String,
     val image: String,

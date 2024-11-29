@@ -1,5 +1,6 @@
 package ro.upt.ac.tooler.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -46,6 +47,11 @@ import ro.upt.ac.tooler.domain.Tool
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.util.UUID
 
 
 @Composable
@@ -74,7 +80,7 @@ fun FleetScreen(viewModel: FleetViewModel) {
                 AddToolDialog(
                     onDismiss = { showAddDialog = false },
                     onSubmit = { name, type, image->
-                        viewModel.addTool(1,name, type, image)
+                        viewModel.addTool(name, type, image)
                         showAddDialog = false
                     }
                 )
@@ -183,13 +189,21 @@ fun AddToolDialog(
 @Composable
 fun GalleryPicker(onImagePicked: (Uri) -> Unit) {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    val context = LocalContext.current
 
     // Launcher for picking an image from the gallery
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri: Uri? ->
             selectedImageUri = uri
-            uri?.let { onImagePicked(it) }
+            uri?.let {
+                val savedImagePath = saveImageInAppFolder(
+                context = context,
+                uri = it,
+                folderName = "AppImages",
+                fileName = "image_${UUID.randomUUID()}.jpg")
+                savedImagePath?.let{path -> onImagePicked(path.toUri())}
+            }
         }
     )
 
@@ -200,4 +214,23 @@ fun GalleryPicker(onImagePicked: (Uri) -> Unit) {
     selectedImageUri?.let {
         Text(text = "Selected Image URI: $it")
     }
+}
+
+fun saveImageInAppFolder(context: Context, uri: Uri, folderName: String, fileName: String): String? {
+    // Create a folder inside the app's internal storage
+    val folder = File(context.filesDir, folderName)
+    if (!folder.exists()) {
+        folder.mkdir()
+    }
+
+    val file = File(folder, fileName)
+    val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+
+    inputStream?.use { input ->
+        FileOutputStream(file).use { output ->
+            input.copyTo(output)
+        }
+    }
+
+    return file.absolutePath // Return the saved image's file path
 }
