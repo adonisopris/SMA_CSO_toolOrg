@@ -22,32 +22,38 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import ro.upt.ac.tooler.data.database.RoomDatabase
 import ro.upt.ac.tooler.data.database.SiteDbStore
 import ro.upt.ac.tooler.data.database.ToolDbStore
+import ro.upt.ac.tooler.domain.Tool
 import ro.upt.ac.tooler.presentation.FleetScreen
 import ro.upt.ac.tooler.presentation.FleetViewModel
 import ro.upt.ac.tooler.presentation.MapScreen
 import ro.upt.ac.tooler.presentation.SiteScreen
 import ro.upt.ac.tooler.presentation.SitesViewModel
+import ro.upt.ac.tooler.presentation.ToolDetail
+import ro.upt.ac.tooler.presentation.ToolDetailViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val fleetViewModel = FleetViewModel(ToolDbStore(RoomDatabase.getDb(this)))
         val sitesViewModel = SitesViewModel(SiteDbStore(RoomDatabase.getDb(this)))
+        val toolDetailViewModel = ToolDetailViewModel(ToolDbStore(RoomDatabase.getDb(this)))
         setContent {
-            MainScreen(fleetViewModel, sitesViewModel)
+            MainScreen(fleetViewModel, sitesViewModel, toolDetailViewModel)
         }
     }
 }
 
 @Composable
-fun MainScreen(fleetViewModel: FleetViewModel, sitesViewModel: SitesViewModel) {
+fun MainScreen(fleetViewModel: FleetViewModel, sitesViewModel: SitesViewModel, toolDetailViewModel: ToolDetailViewModel) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -61,7 +67,13 @@ fun MainScreen(fleetViewModel: FleetViewModel, sitesViewModel: SitesViewModel) {
         ) {
             composable("map") { MapScreen() }
             composable("sites") { SiteScreen(sitesViewModel) }
-            composable("fleet") { FleetScreen(fleetViewModel) }
+            composable("fleet") { FleetScreen(fleetViewModel, navController) }
+            composable(route = "ToolDetail/{toolId}", arguments = listOf(navArgument("toolId"){type = NavType.IntType})){
+                backStackEntry ->
+                val toolId = backStackEntry.arguments?.getInt("toolId") ?: 0
+                ToolDetail(toolId = toolId, toolDetailViewModel = toolDetailViewModel, flatViewModel = fleetViewModel , navController = navController)
+            }
+
         }
     }
 }

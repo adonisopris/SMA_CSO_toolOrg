@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import ro.upt.ac.tooler.domain.Tool
 
 
 @Dao
@@ -15,5 +16,8 @@ interface ToolDao {
     fun add(tool: ToolEntity)
 
     @Delete
-    fun delete(tool: ToolEntity)
+    fun delete(tool : ToolEntity)
+
+    @Query("SELECT * FROM tools WHERE id = :id")
+    fun getToolById(id: Int): ToolEntity?
 }

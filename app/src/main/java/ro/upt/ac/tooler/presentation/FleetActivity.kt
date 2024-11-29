@@ -1,5 +1,5 @@
 package ro.upt.ac.tooler.presentation
-
+import androidx.compose.material.icons.filled.Delete
 import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
@@ -47,7 +47,23 @@ import ro.upt.ac.tooler.domain.Tool
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.IconButton
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.key.Key.Companion.Delete
+import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.room.Delete
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -55,7 +71,7 @@ import java.util.UUID
 
 
 @Composable
-fun FleetScreen(viewModel: FleetViewModel) {
+fun FleetScreen(viewModel: FleetViewModel, navController: NavController) {
     val fleetListState = viewModel.fleetListState.collectAsState()
     val context = LocalContext.current.applicationContext
     var showAddDialog by remember { mutableStateOf(false) }
@@ -64,7 +80,7 @@ fun FleetScreen(viewModel: FleetViewModel) {
 
         Box(modifier = Modifier.fillMaxSize()) {
             LazyColumn {
-                items(fleetListState.value) { tool -> FleetListItem(tool) }
+                items(fleetListState.value) { tool -> FleetListItem(tool = tool, navController = navController, fleetViewModel = viewModel) }
             }
         }
         Box(modifier = Modifier.fillMaxSize()) {
@@ -90,31 +106,54 @@ fun FleetScreen(viewModel: FleetViewModel) {
 }
 
 @Composable
-fun FleetListItem(tool: Tool, modifier: Modifier = Modifier) {
-
+fun FleetListItem(
+    tool: Tool,
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    fleetViewModel: FleetViewModel
+) {
     Card(
-        modifier
+        modifier = modifier
             .padding(10.dp)
-            .wrapContentSize(),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
+            .wrapContentSize()
+            .clickable {
+                navController.navigate(route = "ToolDetail/${tool.id}")
+            },
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(10.dp)
     ) {
         Row(
-            modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.Top,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             Image(
-                painter = rememberAsyncImagePainter(tool.image), //painterResource(id = R.drawable.crane1), //tool.id
+                painter = rememberAsyncImagePainter(tool.image),
                 contentDescription = tool.name,
-                modifier.size(140.dp)
+                modifier = Modifier.size(80.dp) // Adjust size as needed
             )
-            Column(modifier.padding(12.dp)) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = 12.dp)
+            ) {
                 Text(text = tool.name, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                 Text(text = tool.type, fontSize = 18.sp)
-
+            }
+            IconButton(
+                onClick = { fleetViewModel.removeTool(tool) },
+                modifier = Modifier
+                    .size(36.dp) // Small button size
+                    .padding(4.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = Color.Red,
+                    modifier = Modifier.size(24.dp) // Smaller icon size
+                )
             }
         }
     }
@@ -234,3 +273,4 @@ fun saveImageInAppFolder(context: Context, uri: Uri, folderName: String, fileNam
 
     return file.absolutePath // Return the saved image's file path
 }
+

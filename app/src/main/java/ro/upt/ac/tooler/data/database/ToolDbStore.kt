@@ -13,8 +13,11 @@ class ToolDbStore (private val appDatabase: AppDatabase) : ToolRepository {
         appDatabase.toolDao().add(tool.toDbModel())
     }
 
-    override fun removeTool(tool: Tool) {
+    override fun removeTool(tool : Tool) {
         appDatabase.toolDao().delete(tool.toDbModel())
+    }
+    override  fun getToolById(id: Int): Tool? {
+        return appDatabase.toolDao().getToolById(id)?.toDomainModel()
     }
 
 
