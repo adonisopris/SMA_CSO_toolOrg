@@ -32,6 +32,7 @@ import ro.upt.ac.tooler.data.database.RoomDatabase
 import ro.upt.ac.tooler.data.database.SiteDbStore
 import ro.upt.ac.tooler.data.database.ToolDbStore
 import ro.upt.ac.tooler.domain.Tool
+import ro.upt.ac.tooler.presentation.CameraScreen
 import ro.upt.ac.tooler.presentation.FleetScreen
 import ro.upt.ac.tooler.presentation.FleetViewModel
 import ro.upt.ac.tooler.presentation.MapScreen
@@ -71,7 +72,7 @@ fun MainScreen(fleetViewModel: FleetViewModel, sitesViewModel: SitesViewModel, t
             composable(route = "ToolDetail/{toolId}", arguments = listOf(navArgument("toolId"){type = NavType.IntType})){
                 backStackEntry ->
                 val toolId = backStackEntry.arguments?.getInt("toolId") ?: 0
-                ToolDetail(toolId = toolId, toolDetailViewModel = toolDetailViewModel, flatViewModel = fleetViewModel , navController = navController)
+                ToolDetail(toolId = toolId, toolDetailViewModel = toolDetailViewModel)
             }
 
         }

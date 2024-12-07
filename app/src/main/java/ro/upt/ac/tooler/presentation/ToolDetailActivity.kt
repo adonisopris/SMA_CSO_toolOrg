@@ -28,9 +28,7 @@ import ro.upt.ac.tooler.domain.Tool
 fun ToolDetail(
     modifier: Modifier = Modifier,
     toolId: Int,
-    toolDetailViewModel: ToolDetailViewModel,
-    flatViewModel: FleetViewModel,
-    navController: NavController
+    toolDetailViewModel: ToolDetailViewModel
 ) {
     val tool : Tool = toolDetailViewModel.getToolById(toolId)!!
     Column(

@@ -47,6 +47,8 @@ import ro.upt.ac.tooler.domain.Tool
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.view.LifecycleCameraController
+import androidx.camera.view.PreviewView
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Delete
@@ -55,7 +57,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.Key.Companion.Delete
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -64,16 +68,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Delete
+import ro.upt.ac.tooler.data.CameraFileUtils.takePicture
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.util.UUID
+import java.util.concurrent.Executors
 
 
 @Composable
 fun FleetScreen(viewModel: FleetViewModel, navController: NavController) {
     val fleetListState = viewModel.fleetListState.collectAsState()
-    val context = LocalContext.current.applicationContext
     var showAddDialog by remember { mutableStateOf(false) }
 
     Surface(color = Color.White) {
@@ -94,6 +99,7 @@ fun FleetScreen(viewModel: FleetViewModel, navController: NavController) {
             }
             if (showAddDialog) {
                 AddToolDialog(
+                    navController = navController,
                     onDismiss = { showAddDialog = false },
                     onSubmit = { name, type, image->
                         viewModel.addTool(name, type, image)
@@ -161,6 +167,7 @@ fun FleetListItem(
 
 @Composable
 fun AddToolDialog(
+    navController: NavController,
     onDismiss: () -> Unit,
     onSubmit: (name: String, type: String, image: Uri) -> Unit
 ) {
@@ -169,6 +176,7 @@ fun AddToolDialog(
     var image by remember { mutableStateOf("") }
     var available by remember { mutableStateOf(true) }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var takePicture by remember { mutableStateOf(false) }
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
@@ -199,8 +207,32 @@ fun AddToolDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                // Image Input
-                GalleryPicker(onImagePicked = { uri -> selectedImageUri = uri })
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+
+                    Button(
+                        onClick = {
+                            takePicture = true
+                        }
+                    ) {
+                        Text("Take picture")
+                    }
+
+
+                    // Image Input
+                    GalleryPicker(onImagePicked = { uri -> selectedImageUri = uri })
+                }
+                if(takePicture){
+                    CameraScreen (
+                        onSubmit = {item ->
+                            selectedImageUri = item
+                            takePicture = false
+
+                        }
+                    )
+                }
 
                 // Buttons
                 Row(
@@ -272,5 +304,69 @@ fun saveImageInAppFolder(context: Context, uri: Uri, folderName: String, fileNam
     }
 
     return file.absolutePath // Return the saved image's file path
+}
+
+@Composable
+fun CameraScreen(onSubmit: (image: Uri)->Unit) {
+    val context = LocalContext.current
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    // Executor for background tasks, specifically for taking pictures in this context
+    val executor = remember { Executors.newSingleThreadExecutor() }
+    // State to hold the URI of the captured image. Initially null, updated after image capture
+    val capturedImageUri = remember { mutableStateOf<Uri?>(null) }
+
+    // Camera controller tied to the lifecycle of this composable
+    val cameraController = remember {
+        LifecycleCameraController(context).apply {
+            bindToLifecycle(lifecycleOwner) // Binds the camera to the lifecycle of the lifecycleOwner
+        }
+    }
+
+    Box {
+        // PreviewView for the camera feed. Configured to fill the screen and display the camera output
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = { ctx ->
+                PreviewView(ctx).apply {
+                    scaleType = PreviewView.ScaleType.FILL_START
+                    implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                    controller = cameraController // Attach the lifecycle-aware camera controller.
+                }
+            },
+            onRelease = {
+                // Called when the PreviewView is removed from the composable hierarchy
+                cameraController.unbind() // Unbinds the camera to free up resources
+            }
+        )
+
+        // Button that triggers the image capture process
+        Button(
+            onClick = {
+                // Calls a utility function to take a picture, handling success and error scenarios
+                takePicture(cameraController, context, executor, { uri ->
+                    capturedImageUri.value = uri // Update state with the URI of the captured image on success
+                }, { exception ->
+                    // Error handling logic for image capture failures
+                }, )
+                capturedImageUri.value?.let { onSubmit(it) }
+            },
+            modifier = Modifier.align(Alignment.BottomCenter)
+        ) {
+            Text(text = "Take Picture")
+        }
+
+        // Displays the captured image if available
+        capturedImageUri.value?.let { uri ->
+            Image(
+                // Asynchronously loads and displays the image from the URI
+                painter = rememberAsyncImagePainter(uri),
+                contentDescription = null,
+                modifier = Modifier
+                    .width(80.dp)
+                    .align(Alignment.BottomEnd),
+                contentScale = ContentScale.Crop
+            )
+        }
+    }
 }
 
