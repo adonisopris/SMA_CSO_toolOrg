@@ -21,7 +21,7 @@ class ToolDbStore (private val appDatabase: AppDatabase) : ToolRepository {
     }
 
 
-    private fun Tool.toDbModel() = ToolEntity(id,name,type,image,available)
+    private fun Tool.toDbModel() = ToolEntity(id,name,type,image,available, details)
 
-    private fun ToolEntity.toDomainModel() = Tool(id,name,type,image,available)
+    private fun ToolEntity.toDomainModel() = Tool(id,name,type,image,available,details)
 }

@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -51,7 +52,10 @@ import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Photo
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color.Companion.Red
@@ -215,9 +219,14 @@ fun AddToolDialog(
                     Button(
                         onClick = {
                             takePicture = true
-                        }
+                        },
+                        modifier = Modifier.width(100.dp)
                     ) {
-                        Text("Take picture")
+                       // Text("Take picture")
+                        Icon(
+                            imageVector = Icons.Filled.Camera,
+                            contentDescription = "Camera"
+                        )
                     }
 
 
@@ -239,7 +248,11 @@ fun AddToolDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Button(onClick = onDismiss) {
+                    Button(
+                        onClick = onDismiss,
+                        colors = ButtonDefaults.buttonColors(containerColor =  Color(0xffcc1f1f )),
+                        modifier = Modifier.width(100.dp))
+                    {
                         Text("Cancel")
                     }
                     Button(
@@ -247,7 +260,9 @@ fun AddToolDialog(
                             //val imageId = image.toIntOrNull() ?: 0 // Default to 0 if invalid
                             if (name.isNotBlank() && type.isNotBlank() && selectedImageUri != null)
                             onSubmit(name, type, selectedImageUri!!)
-                        }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor =  Color(0xFF348710 )),
+                        modifier = Modifier.width(100.dp)
                     ) {
                         Text("Add")
                     }
@@ -278,13 +293,16 @@ fun GalleryPicker(onImagePicked: (Uri) -> Unit) {
         }
     )
 
-    Button(onClick = { galleryLauncher.launch("image/*") }) {
-        Text("Pick Image from Gallery")
+    Button(onClick = { galleryLauncher.launch("image/*") }, modifier = Modifier.width(100.dp)) {
+        Icon(
+            imageVector = Icons.Filled.Photo,
+            contentDescription = "get Image from Library"
+        )
     }
 
-    selectedImageUri?.let {
+    /*selectedImageUri?.let {
         Text(text = "Selected Image URI: $it")
-    }
+    }*/
 }
 
 fun saveImageInAppFolder(context: Context, uri: Uri, folderName: String, fileName: String): String? {
@@ -321,52 +339,45 @@ fun CameraScreen(onSubmit: (image: Uri)->Unit) {
             bindToLifecycle(lifecycleOwner) // Binds the camera to the lifecycle of the lifecycleOwner
         }
     }
-
     Box {
-        // PreviewView for the camera feed. Configured to fill the screen and display the camera output
-        AndroidView(
-            modifier = Modifier.fillMaxSize(),
-            factory = { ctx ->
-                PreviewView(ctx).apply {
-                    scaleType = PreviewView.ScaleType.FILL_START
-                    implementationMode = PreviewView.ImplementationMode.COMPATIBLE
-                    controller = cameraController // Attach the lifecycle-aware camera controller.
+            // PreviewView for the camera feed. Configured to fill the screen and display the camera output
+            AndroidView(
+                modifier = Modifier.fillMaxSize(),
+                factory = { ctx ->
+                    PreviewView(ctx).apply {
+                        scaleType = PreviewView.ScaleType.FILL_START
+                        implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                        controller =
+                            cameraController // Attach the lifecycle-aware camera controller.
+                    }
+                },
+                onRelease = {
+                    // Called when the PreviewView is removed from the composable hierarchy
+                    cameraController.unbind() // Unbinds the camera to free up resources
                 }
-            },
-            onRelease = {
-                // Called when the PreviewView is removed from the composable hierarchy
-                cameraController.unbind() // Unbinds the camera to free up resources
-            }
-        )
-
-        // Button that triggers the image capture process
-        Button(
-            onClick = {
-                // Calls a utility function to take a picture, handling success and error scenarios
-                takePicture(cameraController, context, executor, { uri ->
-                    capturedImageUri.value = uri // Update state with the URI of the captured image on success
-                }, { exception ->
-                    // Error handling logic for image capture failures
-                }, )
-                capturedImageUri.value?.let { onSubmit(it) }
-            },
-            modifier = Modifier.align(Alignment.BottomCenter)
-        ) {
-            Text(text = "Take Picture")
-        }
-
-        // Displays the captured image if available
-        capturedImageUri.value?.let { uri ->
-            Image(
-                // Asynchronously loads and displays the image from the URI
-                painter = rememberAsyncImagePainter(uri),
-                contentDescription = null,
-                modifier = Modifier
-                    .width(80.dp)
-                    .align(Alignment.BottomEnd),
-                contentScale = ContentScale.Crop
             )
-        }
+
+            // Button that triggers the image capture process
+            Button(
+                onClick = {
+                    // Calls a utility function to take a picture, handling success and error scenarios
+                    takePicture(
+                        cameraController, context, executor,
+                        { uri ->
+                            capturedImageUri.value =
+                                uri // Update state with the URI of the captured image on success
+                            onSubmit(uri)
+                        },
+                        { exception ->
+                            // Error handling logic for image capture failures
+                        },
+                    )
+
+                },
+                modifier = Modifier.align(Alignment.BottomCenter)
+            ) {
+                Text(text = "Take Picture")
+            }
     }
 }
 

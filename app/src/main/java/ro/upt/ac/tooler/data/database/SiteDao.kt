@@ -16,4 +16,7 @@ interface SiteDao {
 
     @Delete
     fun delete(site: SiteEntity)
+
+    @Query("SELECT * FROM sites WHERE id = :id")
+    fun getSiteById(id: Int): SiteEntity?
 }

@@ -36,6 +36,8 @@ import ro.upt.ac.tooler.presentation.CameraScreen
 import ro.upt.ac.tooler.presentation.FleetScreen
 import ro.upt.ac.tooler.presentation.FleetViewModel
 import ro.upt.ac.tooler.presentation.MapScreen
+import ro.upt.ac.tooler.presentation.SiteDetail
+import ro.upt.ac.tooler.presentation.SiteDetailViewModel
 import ro.upt.ac.tooler.presentation.SiteScreen
 import ro.upt.ac.tooler.presentation.SitesViewModel
 import ro.upt.ac.tooler.presentation.ToolDetail
@@ -47,14 +49,15 @@ class MainActivity : ComponentActivity() {
         val fleetViewModel = FleetViewModel(ToolDbStore(RoomDatabase.getDb(this)))
         val sitesViewModel = SitesViewModel(SiteDbStore(RoomDatabase.getDb(this)))
         val toolDetailViewModel = ToolDetailViewModel(ToolDbStore(RoomDatabase.getDb(this)))
+        val siteDetailViewModel = SiteDetailViewModel(SiteDbStore(RoomDatabase.getDb(this)))
         setContent {
-            MainScreen(fleetViewModel, sitesViewModel, toolDetailViewModel)
+            MainScreen(fleetViewModel, sitesViewModel, toolDetailViewModel, siteDetailViewModel)
         }
     }
 }
 
 @Composable
-fun MainScreen(fleetViewModel: FleetViewModel, sitesViewModel: SitesViewModel, toolDetailViewModel: ToolDetailViewModel) {
+fun MainScreen(fleetViewModel: FleetViewModel, sitesViewModel: SitesViewModel, toolDetailViewModel: ToolDetailViewModel, siteDetailViewModel: SiteDetailViewModel) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -67,12 +70,17 @@ fun MainScreen(fleetViewModel: FleetViewModel, sitesViewModel: SitesViewModel, t
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("map") { MapScreen() }
-            composable("sites") { SiteScreen(sitesViewModel) }
+            composable("sites") { SiteScreen(sitesViewModel, navController) }
             composable("fleet") { FleetScreen(fleetViewModel, navController) }
             composable(route = "ToolDetail/{toolId}", arguments = listOf(navArgument("toolId"){type = NavType.IntType})){
                 backStackEntry ->
                 val toolId = backStackEntry.arguments?.getInt("toolId") ?: 0
                 ToolDetail(toolId = toolId, toolDetailViewModel = toolDetailViewModel)
+            }
+            composable(route = "SiteDetail/{siteId}", arguments = listOf(navArgument("siteId"){type = NavType.IntType})){
+                    backStackEntry ->
+                val siteId = backStackEntry.arguments?.getInt("siteId") ?: 0
+                SiteDetail(siteId = siteId, siteDetailViewModel = siteDetailViewModel)
             }
 
         }

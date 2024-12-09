@@ -5,5 +5,6 @@ data class Tool(
     val name: String,
     val type: String,
     val image: String,
-    val available: Boolean = true
+    val available: Boolean = true,
+    val details: String = ""
 )

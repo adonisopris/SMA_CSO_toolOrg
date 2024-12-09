@@ -10,43 +10,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="79a2fbf3-3af4-43bf-b6f3-c0fc16354dcf" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/data/CameraFileUtils.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/CameraActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/checksums/checksums.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/checksums/md5-checksums.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/checksums/sha1-checksums.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/dependencies-accessors/dependencies-accessors.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/dependencies-accessors/gc.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/executionHistory/executionHistory.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/executionHistory/executionHistory.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/fileChanges/last-build.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/fileHashes/fileHashes.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/fileHashes/fileHashes.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/fileHashes/resourceHashesCache.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/gc.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/config.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/vcs-1/gc.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/claug.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/kotlinc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/migrations.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/data/database/Converters.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/SiteDetailActivity.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/SiteDetailViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.0/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.0/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.0/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.0/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.0/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.0/checksums/sha1-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.0/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.0/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.0/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.0/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.0/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.0/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.0/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.0/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.0/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.0/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/data/database/AppDatabase.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/data/database/AppDatabase.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/data/database/SiteDao.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/data/database/SiteDao.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/data/database/SiteDbStore.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/data/database/SiteDbStore.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/data/database/SiteEntity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/data/database/SiteEntity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/data/database/ToolDbStore.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/data/database/ToolDbStore.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/data/database/ToolEntity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/data/database/ToolEntity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/domain/Site.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/domain/Site.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/domain/SiteRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/domain/SiteRepository.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/domain/Tool.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/domain/Tool.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/FleetActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/FleetActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/SiteActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/SiteActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/SitesViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/SitesViewModel.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/ToolDetailActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/ToolDetailActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,27 +119,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Android App.app.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;com.android.tools.idea.streaming.zoom.toolbar.visible&quot;: &quot;false&quot;,
-    &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/oadon/AndroidStudioProjects/toolOrg&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Android App.app.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "com.android.tools.idea.streaming.zoom.toolbar.visible": "false",
+    "com.google.services.firebase.aqiPopupShown": "true",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/oadon/AndroidStudioProjects/toolOrg",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;kotlin-gradle-user-dirs&quot;: [
-      &quot;C:\\Users\\oadon\\.gradle&quot;
+  "keyToStringList": {
+    "kotlin-gradle-user-dirs": [
+      "C:\\Users\\oadon\\.gradle"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\oadon\AndroidStudioProjects\toolOrg\app\src\main\res\drawable" />

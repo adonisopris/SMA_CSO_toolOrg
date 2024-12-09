@@ -6,4 +6,5 @@ interface SiteRepository{
     fun getSites() : List<Site>
     fun addSite(site: Site)
     fun removeSite(site: Site)
+    fun getSiteById(id: Int): Site?
 }

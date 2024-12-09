@@ -16,9 +16,12 @@ class SiteDbStore (private val appDatabase: AppDatabase) : SiteRepository {
     override fun removeSite(site: Site) {
         appDatabase.siteDao().delete(site.toDbModel())
     }
+    override  fun getSiteById(id: Int): Site? {
+        return appDatabase.siteDao().getSiteById(id)?.toDomainModel()
+    }
 
 
-    private fun Site.toDbModel() = SiteEntity(id,name,type)
+    private fun Site.toDbModel() = SiteEntity(id,name,type,latitude,longitude,details)
 
-    private fun SiteEntity.toDomainModel() = Site(id,name,type)
+    private fun SiteEntity.toDomainModel() = Site(id,name,type,latitude,longitude,details)
 }
