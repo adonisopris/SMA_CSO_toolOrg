@@ -7,4 +7,5 @@ interface SiteRepository{
     fun addSite(site: Site)
     fun removeSite(site: Site)
     fun getSiteById(id: Int): Site?
+    fun updateTools(siteId: Int, newTools: String)
 }

@@ -7,5 +7,5 @@ data class Site(
     val latitude: Double,
     val longitude: Double,
     val details: String = "",
-    val tools: MutableList<Int>? = null
+    var tools: List<Int>? = null
 )

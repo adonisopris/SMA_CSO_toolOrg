@@ -20,6 +20,10 @@ class SiteDbStore (private val appDatabase: AppDatabase) : SiteRepository {
         return appDatabase.siteDao().getSiteById(id)?.toDomainModel()
     }
 
+    override fun updateTools(siteId: Int, newTools: String) {
+        appDatabase.siteDao().updateTools(siteId, newTools)
+    }
+
 
     private fun Site.toDbModel() = SiteEntity(id,name,type,latitude,longitude,details)
 
