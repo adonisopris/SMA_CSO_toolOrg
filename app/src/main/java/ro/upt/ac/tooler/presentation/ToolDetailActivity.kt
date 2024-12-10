@@ -53,7 +53,11 @@ fun ToolDetail(
                 modifier.clip(RoundedCornerShape(16.dp)).height(400.dp)
             )
         }
-        Text(text = tool.type, fontSize = 30.sp, fontWeight = FontWeight.Bold)
+        Text(text = tool.name, fontSize = 30.sp, fontWeight = FontWeight.Bold)
+        Text(text = tool.type, fontSize = 20.sp)
+        Text(text = "In usage on site: ${toolDetailViewModel.getSiteOfTool(tool)?.name?:"not in use"}", fontSize = 30.sp)
+        Text(text = "In usage since: ${tool.startDate?:"not in use"}", fontSize = 20.sp)
+        Text(text = "In usage until: ${tool.endDate?:"not in use"}", fontSize = 20.sp)
 
     }
 }

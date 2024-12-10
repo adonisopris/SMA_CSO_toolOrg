@@ -13,7 +13,5 @@ data class SiteEntity(
     val type: String,
     val latitude: Double,
     val longitude: Double,
-    val details: String = "",
-    @TypeConverters(Converters::class)
-    val tools: List<Int>? =null
+    val details: String = ""
 )

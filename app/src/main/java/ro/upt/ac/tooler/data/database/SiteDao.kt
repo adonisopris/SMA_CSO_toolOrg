@@ -21,7 +21,15 @@ interface SiteDao {
     @Query("SELECT * FROM sites WHERE id = :id")
     fun getSiteById(id: Int): SiteEntity?
 
-    @Query("UPDATE sites SET tools = :tools WHERE id = :id")
-    fun updateTools(id: Int, tools: String)
+    // Fetch a single site with its tools
+    @Transaction
+    @Query("SELECT * FROM sites WHERE id = :siteId")
+    fun getSiteWithTools(siteId: Int): SiteWithTools
+
+    // Fetch all sites with their tools
+    @Transaction
+    @Query("SELECT * FROM sites")
+    fun getAllSitesWithTools(): List<SiteWithTools>
+
 
 }

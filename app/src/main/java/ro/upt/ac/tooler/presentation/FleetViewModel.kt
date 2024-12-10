@@ -25,6 +25,7 @@ import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import ro.upt.ac.tooler.data.database.ToolEntity
 import ro.upt.ac.tooler.domain.Tool
 import ro.upt.ac.tooler.domain.ToolRepository
 
@@ -32,7 +33,7 @@ class FleetViewModel(private val toolRepository: ToolRepository) : ViewModel() {
     private val _fleetListState =  MutableStateFlow(toolRepository.getTools())
     val fleetListState: StateFlow<List<Tool>> = _fleetListState.asStateFlow()
 
-    private fun retrieveTools() {
+    fun retrieveTools() {
         _fleetListState.value = toolRepository.getTools()
     }
 
@@ -41,7 +42,7 @@ class FleetViewModel(private val toolRepository: ToolRepository) : ViewModel() {
         retrieveTools()
     }
 
-    fun getToolById(id: Int) : Tool?{
+    fun getToolById(id: Int) : Tool? {
         return toolRepository.getToolById(id)
     }
 

@@ -20,8 +20,12 @@ class SiteDbStore (private val appDatabase: AppDatabase) : SiteRepository {
         return appDatabase.siteDao().getSiteById(id)?.toDomainModel()
     }
 
-    override fun updateTools(siteId: Int, newTools: String) {
-        appDatabase.siteDao().updateTools(siteId, newTools)
+    override fun getSiteWithTools(siteId: Int): SiteWithTools {
+        return appDatabase.siteDao().getSiteWithTools(siteId)
+    }
+
+    override fun getAllSitesWithTools(): List<SiteWithTools> {
+        return appDatabase.siteDao().getAllSitesWithTools()
     }
 
 

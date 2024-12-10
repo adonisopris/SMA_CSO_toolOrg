@@ -4,8 +4,9 @@ import androidx.room.RoomDatabase
 import androidx.room.Database
 import androidx.room.TypeConverters
 
-@TypeConverters(value = [Converters::class])
-@Database(entities = [ToolEntity::class, SiteEntity::class], version = 5)
+
+@Database(entities = [ToolEntity::class, SiteEntity::class], version = 7)
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun toolDao(): ToolDao
     abstract fun siteDao(): SiteDao

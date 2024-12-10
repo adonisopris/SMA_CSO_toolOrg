@@ -1,8 +1,15 @@
 package ro.upt.ac.tooler
 
+import android.Manifest.permission
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -16,11 +23,16 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -28,6 +40,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.maps.model.LatLng
 import ro.upt.ac.tooler.data.database.RoomDatabase
 import ro.upt.ac.tooler.data.database.SiteDbStore
 import ro.upt.ac.tooler.data.database.ToolDbStore
@@ -35,29 +50,101 @@ import ro.upt.ac.tooler.domain.Tool
 import ro.upt.ac.tooler.presentation.CameraScreen
 import ro.upt.ac.tooler.presentation.FleetScreen
 import ro.upt.ac.tooler.presentation.FleetViewModel
-import ro.upt.ac.tooler.presentation.MapScreen
 import ro.upt.ac.tooler.presentation.SiteDetail
 import ro.upt.ac.tooler.presentation.SiteDetailViewModel
-import ro.upt.ac.tooler.presentation.SiteScreen
+
 import ro.upt.ac.tooler.presentation.SitesViewModel
 import ro.upt.ac.tooler.presentation.ToolDetail
 import ro.upt.ac.tooler.presentation.ToolDetailViewModel
+import ro.upt.ac.tooler.location.LocationHandler
+import ro.upt.ac.tooler.presentation.MapActivity
+import ro.upt.ac.tooler.presentation.MapViewModel
+import ro.upt.ac.tooler.presentation.SiteActivity
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(){
+
+    private val latLngState = mutableStateOf(LatLng(45.9442858, 25.0094303))
+    private lateinit var locationHandler: LocationHandler
+    private var locationCallback: LocationCallback? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val fleetViewModel = FleetViewModel(ToolDbStore(RoomDatabase.getDb(this)))
         val sitesViewModel = SitesViewModel(SiteDbStore(RoomDatabase.getDb(this)))
+        val mapViewModel = MapViewModel(SiteDbStore(RoomDatabase.getDb(this)))
         val toolDetailViewModel = ToolDetailViewModel(ToolDbStore(RoomDatabase.getDb(this)))
-        val siteDetailViewModel = SiteDetailViewModel(SiteDbStore(RoomDatabase.getDb(this)))
+        val siteDetailViewModel = SiteDetailViewModel(SiteDbStore(RoomDatabase.getDb(this)), ToolDbStore(RoomDatabase.getDb(this)) )
+        this.locationHandler = LocationHandler(this)
         setContent {
-            MainScreen(fleetViewModel, sitesViewModel, toolDetailViewModel, siteDetailViewModel)
+            MainScreen(fleetViewModel, sitesViewModel, toolDetailViewModel, siteDetailViewModel,mapViewModel, latLngState)
         }
     }
+    override fun onResume() {
+        super.onResume()
+
+        if (!isLocationPermissionGranted) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_ID
+            )
+        }
+
+        setupLocation()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        if (locationCallback != null) {
+            locationHandler.unregisterLocationListener(locationCallback!!)
+        }
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        when (requestCode) {
+            LOCATION_PERMISSION_REQUEST_ID -> {
+                checkAndShowToast(grantResults, R.string.toast_location_permission)
+            }
+
+        }
+    }
+    private fun checkAndShowToast(grantResults: IntArray, @StringRes toastResId: Int) {
+        if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, toastResId, Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+    private fun setupLocation() {
+        this.locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                locationResult.lastLocation?.let {
+                    latLngState.value = LatLng(it.latitude, it.longitude)
+                }
+            }
+        }
+        locationHandler.registerLocationListener(locationCallback!!)
+    }
+
+    private val isLocationPermissionGranted: Boolean
+        get() = ContextCompat.checkSelfPermission(
+            this,
+            permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_ID = 111
+    }
+
 }
 
 @Composable
-fun MainScreen(fleetViewModel: FleetViewModel, sitesViewModel: SitesViewModel, toolDetailViewModel: ToolDetailViewModel, siteDetailViewModel: SiteDetailViewModel) {
+fun MainScreen(fleetViewModel: FleetViewModel, sitesViewModel: SitesViewModel, toolDetailViewModel: ToolDetailViewModel, siteDetailViewModel: SiteDetailViewModel,mapViewModel: MapViewModel, latLngState: MutableState<LatLng>) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -69,8 +156,8 @@ fun MainScreen(fleetViewModel: FleetViewModel, sitesViewModel: SitesViewModel, t
             startDestination = "map",
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("map") { MapScreen() }
-            composable("sites") { SiteScreen(sitesViewModel, navController) }
+            composable("map") {  MapActivity().MapActivityScreen(mapViewModel, latLngState, navController) }
+            composable("sites") { SiteActivity().SiteScreen(sitesViewModel, navController, latLngState) }
             composable("fleet") { FleetScreen(fleetViewModel, navController) }
             composable(route = "ToolDetail/{toolId}", arguments = listOf(navArgument("toolId"){type = NavType.IntType})){
                 backStackEntry ->
@@ -80,7 +167,7 @@ fun MainScreen(fleetViewModel: FleetViewModel, sitesViewModel: SitesViewModel, t
             composable(route = "SiteDetail/{siteId}", arguments = listOf(navArgument("siteId"){type = NavType.IntType})){
                     backStackEntry ->
                 val siteId = backStackEntry.arguments?.getInt("siteId") ?: 0
-                SiteDetail(siteId = siteId, siteDetailViewModel = siteDetailViewModel, fleetViewModel = fleetViewModel)
+                SiteDetail(siteId = siteId, siteDetailViewModel = siteDetailViewModel, fleetViewModel = fleetViewModel, navController = navController)
             }
 
         }
@@ -150,4 +237,6 @@ fun BottomNavigationBar(navController: NavController) {
             icon = { Icon(Icons.Default.Build, contentDescription = "Fleet") }
         )
     }
+
+
 }
