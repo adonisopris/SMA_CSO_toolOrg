@@ -12,5 +12,11 @@ class ToolDetailViewModel (private val toolRepository: ToolRepository) : ViewMod
     fun getSiteOfTool(tool: Tool) : Site?{
         return toolRepository.getSiteOfTool(tool)
     }
+    fun removeTool(tool: Tool){
+        tool.siteId = null
+        tool.startDate = null
+        tool.endDate = null
+        toolRepository.updateTool(tool)
+    }
 
 }

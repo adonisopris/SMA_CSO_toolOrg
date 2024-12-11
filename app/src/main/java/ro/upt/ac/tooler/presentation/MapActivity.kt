@@ -89,20 +89,21 @@ class MapActivity : AppCompatActivity() {
             ) {
                 MapComposable(latLngState, mapViewModel, navController)
             }
-            Row(
+            /*Row(
                 Modifier
                     .weight(1f)
                     .align(Alignment.CenterHorizontally)
                     .padding(6.dp)
             ) {
                 LocationComposable(latLngState)
-            }
+            }*/
         }
     }
 
     @Composable
     private fun MapComposable(latLngState: MutableState<LatLng>, mapViewModel: MapViewModel, navController: NavController) {
         val mapListState = mapViewModel.siteListState.collectAsState()
+        mapViewModel.retrieveTools()
         val cameraPositionState = rememberCameraPositionState {
             position = CameraPosition.fromLatLngZoom(latLngState.value, 10f)
         }
@@ -119,10 +120,10 @@ class MapActivity : AppCompatActivity() {
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState
         ) {
-            Marker(
+            /*Marker(
                 state = MarkerState(position = latLngState.value),
                 title = "Your location",
-            )
+            )*/
             mapListState.value.forEach{ site ->
                 Marker(
                     state = MarkerState(position = LatLng(site.latitude,site.longitude)),

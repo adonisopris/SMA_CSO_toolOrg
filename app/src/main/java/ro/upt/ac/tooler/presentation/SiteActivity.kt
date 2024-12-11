@@ -71,11 +71,6 @@ import ro.upt.ac.tooler.location.LocationHandler
 
 class SiteActivity :AppCompatActivity() {
 
-    var latLngState = mutableStateOf(LatLng(45.9442858, 25.0094303))
-    private var locationCallback: LocationCallback? = null
-    private lateinit var locationHandler: LocationHandler
-
-
     @Composable
     fun SiteScreen(viewModel: SitesViewModel, navController: NavController, latLngState: MutableState<LatLng>) {
         val siteListState = viewModel.sitesListState.collectAsState()

@@ -162,7 +162,7 @@ fun MainScreen(fleetViewModel: FleetViewModel, sitesViewModel: SitesViewModel, t
             composable(route = "ToolDetail/{toolId}", arguments = listOf(navArgument("toolId"){type = NavType.IntType})){
                 backStackEntry ->
                 val toolId = backStackEntry.arguments?.getInt("toolId") ?: 0
-                ToolDetail(toolId = toolId, toolDetailViewModel = toolDetailViewModel)
+                ToolDetail(toolId = toolId, toolDetailViewModel = toolDetailViewModel, navController = navController)
             }
             composable(route = "SiteDetail/{siteId}", arguments = listOf(navArgument("siteId"){type = NavType.IntType})){
                     backStackEntry ->

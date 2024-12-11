@@ -39,9 +39,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.graphics.Color
@@ -78,7 +80,7 @@ fun SiteDetail(
                     LazyColumn {
                         items(tools) { toolId ->
                             fleetViewModel.getToolById(toolId)?.let { tool ->
-                                ToolListItem(tool = tool, modifier = modifier, navController = navController)
+                                ToolListItem(tool = tool, tools = tools, modifier = modifier, navController = navController, siteDetailViewModel = siteDetailViewModel, fleetViewModel = fleetViewModel)
                             }
                         }
                     }
@@ -99,6 +101,7 @@ fun SiteDetail(
         }
 
         if (showAddDialog) {
+            fleetViewModel.retrieveTools()
             AddTools(
                 fleetViewModel = fleetViewModel,
                 onDismiss = { showAddDialog = false },
@@ -176,8 +179,11 @@ fun AddTools(
 @Composable
 fun ToolListItem(
     tool: Tool,
+    tools: List<Int>,
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    siteDetailViewModel: SiteDetailViewModel,
+    fleetViewModel: FleetViewModel
 ) {
     Card(
         modifier = modifier
