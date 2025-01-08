@@ -181,6 +181,7 @@ fun AddToolDialog(
     var available by remember { mutableStateOf(true) }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var takePicture by remember { mutableStateOf(false) }
+    val defaultImageUri = Uri.parse("android.resource://ro.upt.ac.tooler/drawable/default_tool")
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
@@ -258,8 +259,11 @@ fun AddToolDialog(
                     Button(
                         onClick = {
                             //val imageId = image.toIntOrNull() ?: 0 // Default to 0 if invalid
+                            if(name.isNotBlank() && type.isNotBlank() && selectedImageUri == null)
+                                onSubmit(name, type, defaultImageUri)
+
                             if (name.isNotBlank() && type.isNotBlank() && selectedImageUri != null)
-                            onSubmit(name, type, selectedImageUri!!)
+                                onSubmit(name, type, selectedImageUri!!)
                         },
                         colors = ButtonDefaults.buttonColors(containerColor =  Color(0xFF348710 )),
                         modifier = Modifier.width(100.dp)

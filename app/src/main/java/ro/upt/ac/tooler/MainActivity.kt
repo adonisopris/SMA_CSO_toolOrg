@@ -45,6 +45,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
 import ro.upt.ac.tooler.data.database.RoomDatabase
 import ro.upt.ac.tooler.data.database.SiteDbStore
+import ro.upt.ac.tooler.data.database.SiteTypeDbStore
 import ro.upt.ac.tooler.data.database.ToolDbStore
 import ro.upt.ac.tooler.domain.Tool
 import ro.upt.ac.tooler.presentation.CameraScreen
@@ -70,7 +71,7 @@ class MainActivity : ComponentActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val fleetViewModel = FleetViewModel(ToolDbStore(RoomDatabase.getDb(this)))
-        val sitesViewModel = SitesViewModel(SiteDbStore(RoomDatabase.getDb(this)))
+        val sitesViewModel = SitesViewModel(SiteDbStore(RoomDatabase.getDb(this)), SiteTypeDbStore(RoomDatabase.getDb(this)))
         val mapViewModel = MapViewModel(SiteDbStore(RoomDatabase.getDb(this)))
         val toolDetailViewModel = ToolDetailViewModel(ToolDbStore(RoomDatabase.getDb(this)))
         val siteDetailViewModel = SiteDetailViewModel(SiteDbStore(RoomDatabase.getDb(this)), ToolDbStore(RoomDatabase.getDb(this)) )

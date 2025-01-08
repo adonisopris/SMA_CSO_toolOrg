@@ -19,10 +19,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -66,7 +72,12 @@ import ro.upt.ac.tooler.domain.Tool
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MarkerState
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import ro.upt.ac.tooler.R
+import ro.upt.ac.tooler.data.database.RoomDatabase.getDb
+import ro.upt.ac.tooler.data.database.SiteTypeEntity
+import ro.upt.ac.tooler.domain.SiteType
 import ro.upt.ac.tooler.location.LocationHandler
 
 class SiteActivity :AppCompatActivity() {
@@ -102,6 +113,7 @@ class SiteActivity :AppCompatActivity() {
                     AddSiteDialog(
                         navController = navController,
                         latLngState = latLngState,
+                        viewModel = viewModel,
                         onDismiss = { showAddDialog = false },
                         onSubmit = { name, type, details, latitude, longitude ->
                             viewModel.addSite(
@@ -170,18 +182,37 @@ class SiteActivity :AppCompatActivity() {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun AddSiteDialog(
         navController: NavController,
         latLngState: MutableState<LatLng>,
+        viewModel: SitesViewModel,
         onDismiss: () -> Unit,
         onSubmit: (name: String, type: String, details: String, latitude: Double, longitude: Double) -> Unit
     ) {
         var name by remember { mutableStateOf("") }
-        var type by remember { mutableStateOf("") }
+        var selectedType by remember { mutableStateOf("") }
+        var customType by remember { mutableStateOf("") }
         var details by remember { mutableStateOf("") }
         var latitude by remember { mutableStateOf("") }
         var longitude by remember { mutableStateOf("") }
+        var expanded by remember { mutableStateOf(false) }
+        val siteTypes by viewModel.siteTypes.collectAsState(initial = emptyList())
+        /*val initialSiteTypes = listOf(
+            "Construction",
+            "Demolition",
+            "Renovation",
+            "Road Construction",
+            "Residential Construction",
+            "Commercial Construction",
+            "Industrial Construction",
+            "Airport Construction",
+            "Railway Projects",
+            "Seaport Construction",
+            "Tunnel Construction",
+        )
+        initialSiteTypes.forEach{type ->  viewModel.addSiteType(type)}*/
 
         Dialog(onDismissRequest = onDismiss) {
             Surface(
@@ -204,21 +235,56 @@ class SiteActivity :AppCompatActivity() {
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    // Type Input
-                    TextField(
-                        value = type,
-                        onValueChange = { type = it },
-                        label = { Text("Site Type") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    // Type Selection Dropdown
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        ExposedDropdownMenuBox(
+                            expanded = expanded,
+                            onExpandedChange = {
+                                expanded = !expanded
+                            }
+                        ) {
+                            TextField(
+                                value = selectedType,
+                                onValueChange = { selectedType = it },
+                                label = { Text(text = "Search type") },
+                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                                modifier = Modifier.menuAnchor().fillMaxWidth()
+                            )
+
+                            val filteredOptions =
+                                siteTypes.filter { it.name.contains(selectedType, ignoreCase = true) }
+                            if (filteredOptions.isNotEmpty()) {
+                                ExposedDropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = {
+                                        // We shouldn't hide the menu when the user enters/removes any character
+                                    }
+                                ) {
+                                    filteredOptions.forEach { item ->
+                                        DropdownMenuItem(
+                                            text = { Text(text = item.name) },
+                                            onClick = {
+                                                selectedType = item.name
+                                                expanded = false
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     // Type Details
                     TextField(
                         value = details,
                         onValueChange = { details = it },
-                        label = { Text("details") },
+                        label = { Text("Details") },
                         modifier = Modifier.fillMaxWidth()
                     )
+
                     Text("Choose the location", fontSize = 30.sp)
                     Row(
                         Modifier.weight(7f)
@@ -243,8 +309,7 @@ class SiteActivity :AppCompatActivity() {
                             onClick = onDismiss,
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xffcc1f1f)),
                             modifier = Modifier.width(100.dp)
-                        )
-                        {
+                        ) {
                             Text("Cancel")
                         }
                         Button(
@@ -252,11 +317,15 @@ class SiteActivity :AppCompatActivity() {
                                 latitude = latLngState.value.latitude.toString()
                                 longitude = latLngState.value.longitude.toString()
 
-                                //val imageId = image.toIntOrNull() ?: 0 // Default to 0 if invalid
-                                if (name.isNotBlank() && type.isNotBlank() && longitude.isNotBlank() && latitude.isNotBlank())
+                                var newType = true
+                                siteTypes.forEach{siteType -> if(siteType.name == selectedType) newType = false}
+                                if (newType)
+                                    viewModel.addSiteType(selectedType)
+
+                                if (name.isNotBlank() && selectedType.isNotBlank() && longitude.isNotBlank() && latitude.isNotBlank())
                                     onSubmit(
                                         name,
-                                        type,
+                                        selectedType,
                                         details,
                                         latitude.toDouble(),
                                         longitude.toDouble()
@@ -272,6 +341,7 @@ class SiteActivity :AppCompatActivity() {
             }
         }
     }
+
 
     @Composable
     fun MapComposable(latLngState: MutableState<LatLng>) {

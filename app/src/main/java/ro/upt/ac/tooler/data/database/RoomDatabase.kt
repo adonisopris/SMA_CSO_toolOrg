@@ -2,6 +2,9 @@ package ro.upt.ac.tooler.data.database
 
 import android.content.Context
 import androidx.room.Room
+import androidx.sqlite.db.SupportSQLiteDatabase
+import ro.upt.ac.tooler.domain.SiteType
+import java.util.concurrent.Executors
 
 object RoomDatabase {
 
