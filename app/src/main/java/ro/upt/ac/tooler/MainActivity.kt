@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity(){
         val fleetViewModel = FleetViewModel(ToolDbStore(RoomDatabase.getDb(this)))
         val sitesViewModel = SitesViewModel(SiteDbStore(RoomDatabase.getDb(this)), SiteTypeDbStore(RoomDatabase.getDb(this)))
         val mapViewModel = MapViewModel(SiteDbStore(RoomDatabase.getDb(this)))
-        val toolDetailViewModel = ToolDetailViewModel(ToolDbStore(RoomDatabase.getDb(this)))
+        val toolDetailViewModel = ToolDetailViewModel(ToolDbStore(RoomDatabase.getDb(this)), SiteDbStore(RoomDatabase.getDb(this)) )
         val siteDetailViewModel = SiteDetailViewModel(SiteDbStore(RoomDatabase.getDb(this)), ToolDbStore(RoomDatabase.getDb(this)) )
         this.locationHandler = LocationHandler(this)
         setContent {
