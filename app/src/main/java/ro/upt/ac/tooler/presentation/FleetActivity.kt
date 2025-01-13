@@ -55,6 +55,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Photo
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.ui.draw.clip
@@ -63,6 +64,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.Key.Companion.Delete
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -84,12 +86,39 @@ import java.util.concurrent.Executors
 fun FleetScreen(viewModel: FleetViewModel, navController: NavController) {
     val fleetListState = viewModel.fleetListState.collectAsState()
     var showAddDialog by remember { mutableStateOf(false) }
-
+    var searchQuery by remember { mutableStateOf("") }
     Surface(color = Color.White) {
 
         Box(modifier = Modifier.fillMaxSize()) {
-            LazyColumn {
-                items(fleetListState.value) { tool -> FleetListItem(tool = tool, navController = navController, fleetViewModel = viewModel) }
+            Column (modifier = Modifier.fillMaxSize()) {
+                // Search bar
+                TextField(
+                    value = searchQuery,
+                    onValueChange = { query -> searchQuery = query },
+                    label = { Text("Search Tools") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    singleLine = true,
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = null
+                        )
+                    }
+                )
+                LazyColumn {
+                    items(fleetListState.value.filter {
+                        it.name.toUpperCase().contains(searchQuery.toUpperCase()) ||
+                                it.type.toUpperCase().contains(searchQuery.toUpperCase())
+                    }) { tool ->
+                        FleetListItem(
+                            tool = tool,
+                            navController = navController,
+                            fleetViewModel = viewModel
+                        )
+                    }
+                }
             }
         }
         Box(modifier = Modifier.fillMaxSize()) {

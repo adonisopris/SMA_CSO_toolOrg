@@ -25,6 +25,8 @@ class LocationHandler(context: Context) {
 
         }
 
+
+
         fun unregisterLocationListener(locationCallback: LocationCallback) {
             client.removeLocationUpdates(locationCallback)
         }

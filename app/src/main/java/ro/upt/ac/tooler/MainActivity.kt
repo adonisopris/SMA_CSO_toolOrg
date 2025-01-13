@@ -180,17 +180,19 @@ fun CustomAppBar(navController: NavController) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
 
-    val title = when (currentRoute) {
-        "map" -> "Map Screen"
-        "sites" -> "Sites Screen"
-        "fleet" -> "Fleet Screen"
-        else -> "Tooler App"
+    val title = when {
+        currentRoute?.contains("ToolDetail", ignoreCase = true) == true -> "Tool details"
+        currentRoute?.contains("SiteDetail", ignoreCase = true) == true -> "Site details"
+        currentRoute?.contains("map", ignoreCase = true) == true -> "Map"
+        currentRoute?.contains("sites", ignoreCase = true) == true -> "Sites"
+        currentRoute?.contains("fleet", ignoreCase = true) == true -> "Fleet"
+        else -> "Unknown Screen"
     }
 
     CustomBar(
         title = title,
-        backgroundColor = Color(0xFF348710 ),
-        textColor = Color.White
+        backgroundColor = Color(0xFF85b94c ),
+        textColor = Color.Black
     )
 }
 

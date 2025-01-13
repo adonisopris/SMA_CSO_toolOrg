@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -33,6 +34,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -49,7 +51,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 
 import androidx.compose.ui.unit.dp
@@ -82,21 +88,45 @@ import ro.upt.ac.tooler.location.LocationHandler
 
 class SiteActivity :AppCompatActivity() {
 
+
     @Composable
     fun SiteScreen(viewModel: SitesViewModel, navController: NavController, latLngState: MutableState<LatLng>) {
         val siteListState = viewModel.sitesListState.collectAsState()
         var showAddDialog by remember { mutableStateOf(false) }
+        var searchQuery by remember { mutableStateOf("") }
 
         Surface(color = Color.White) {
 
             Box(modifier = Modifier.fillMaxSize()) {
-                LazyColumn {
-                    items(siteListState.value) { site ->
-                        SiteListItem(
-                            site = site,
-                            navController = navController,
-                            siteViewModel = viewModel
-                        )
+                Column(modifier = Modifier.fillMaxSize()) {
+
+                    // Search bar
+                    TextField(
+                        value = searchQuery,
+                        onValueChange = { query -> searchQuery = query },
+                        label = { Text("Search Sites") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        singleLine = true,
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = null
+                            )
+                        }
+                    )
+                    LazyColumn {
+                        items(siteListState.value.filter {
+                            it.name.toUpperCase().contains(searchQuery.toUpperCase()) ||
+                                    it.type.toUpperCase().contains(searchQuery.toUpperCase())})
+                        { site ->
+                            SiteListItem(
+                                site = site,
+                                navController = navController,
+                                siteViewModel = viewModel
+                            )
+                        }
                     }
                 }
             }
@@ -155,7 +185,13 @@ class SiteActivity :AppCompatActivity() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(15.dp)
             ) {
-                Text(text = site.id.toString(), fontSize = 25.sp)
+                val siteImage = Uri.parse("android.resource://ro.upt.ac.tooler/drawable/site")
+                Image(
+                    painter = rememberAsyncImagePainter(siteImage),
+                    contentDescription = null,
+                    modifier = Modifier.size(100.dp),
+                    contentScale = ContentScale.Crop // Crop the image to fill the area
+                )
 
                 Column(
                     modifier = Modifier
@@ -199,6 +235,7 @@ class SiteActivity :AppCompatActivity() {
         var longitude by remember { mutableStateOf("") }
         var expanded by remember { mutableStateOf(false) }
         val siteTypes by viewModel.siteTypes.collectAsState(initial = emptyList())
+        val context = LocalContext.current
         /*val initialSiteTypes = listOf(
             "Construction",
             "Demolition",
@@ -297,7 +334,7 @@ class SiteActivity :AppCompatActivity() {
                             .align(Alignment.CenterHorizontally)
                             .padding(16.dp)
                     ) {
-                        LocationComposable(latLngState)
+                        LocationComposable(latLngState, viewModel, context)
                     }
 
                     // Buttons
@@ -372,7 +409,7 @@ class SiteActivity :AppCompatActivity() {
         }
     }
     @Composable
-    private fun LocationComposable(latLngState: MutableState<LatLng>) {
-        Text(text = "Lat = ${latLngState.value.latitude}, Lng = ${latLngState.value.longitude}")
+    private fun LocationComposable(latLngState: MutableState<LatLng>, viewModel: SitesViewModel, context: Context) {
+        Text(text = viewModel.getAddressFromLatLng(context, latLngState.value.latitude, latLngState.value.longitude))
     }
 }

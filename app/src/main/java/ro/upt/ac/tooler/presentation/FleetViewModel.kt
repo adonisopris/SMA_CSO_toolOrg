@@ -68,5 +68,6 @@ class FleetViewModel(private val toolRepository: ToolRepository) : ViewModel() {
             e.printStackTrace()
         }
     }
+
 }
 
