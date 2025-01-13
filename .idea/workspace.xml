@@ -10,25 +10,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="79a2fbf3-3af4-43bf-b6f3-c0fc16354dcf" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/construction_site.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/site.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.0/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.0/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.0/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.0/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.0/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.0/fileHashes/resourceHashesCache.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/location/LocationHandler.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/location/LocationHandler.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/data/database/SiteDbStore.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/data/database/SiteDbStore.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/FleetActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/FleetActivity.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/FleetViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/FleetViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/SiteActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/SiteActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/SiteDetailActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/SiteDetailActivity.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/SiteDetailViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/SiteDetailViewModel.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/SitesViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/SitesViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/ToolDetailActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/ToolDetailActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/ToolDetailViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/ro/upt/ac/tooler/presentation/ToolDetailViewModel.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -13,6 +13,7 @@ import ro.upt.ac.tooler.domain.Site
 import ro.upt.ac.tooler.domain.SiteRepository
 import ro.upt.ac.tooler.domain.SiteType
 import ro.upt.ac.tooler.domain.SiteTypeRepository
+import ro.upt.ac.tooler.domain.Tool
 import java.util.Locale
 
 class SitesViewModel(private val siteRepository: SiteRepository, private val siteTypeRepository: SiteTypeRepository): ViewModel() {
@@ -42,6 +43,7 @@ class SitesViewModel(private val siteRepository: SiteRepository, private val sit
             latitude = latitude, longitude = longitude))
         retrieveSites()
     }
+
 
     fun removeSite(site : Site) {
         siteRepository.removeSite(site)

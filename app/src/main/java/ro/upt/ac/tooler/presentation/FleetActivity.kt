@@ -134,8 +134,8 @@ fun FleetScreen(viewModel: FleetViewModel, navController: NavController) {
                 AddToolDialog(
                     navController = navController,
                     onDismiss = { showAddDialog = false },
-                    onSubmit = { name, type, image->
-                        viewModel.addTool(name, type, image)
+                    onSubmit = { name, type, details, image->
+                        viewModel.addTool(name, type, details, image)
                         showAddDialog = false
                     }
                 )
@@ -202,12 +202,11 @@ fun FleetListItem(
 fun AddToolDialog(
     navController: NavController,
     onDismiss: () -> Unit,
-    onSubmit: (name: String, type: String, image: Uri) -> Unit
+    onSubmit: (name: String, type: String, details: String, image: Uri) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var type by remember { mutableStateOf("") }
-    var image by remember { mutableStateOf("") }
-    var available by remember { mutableStateOf(true) }
+    var details by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var takePicture by remember { mutableStateOf(false) }
     val defaultImageUri = Uri.parse("android.resource://ro.upt.ac.tooler/drawable/default_tool")
@@ -238,6 +237,13 @@ fun AddToolDialog(
                     value = type,
                     onValueChange = { type = it },
                     label = { Text("Tool Type") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                // Type Details
+                TextField(
+                    value = details,
+                    onValueChange = { details = it },
+                    label = { Text("Tool details") },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -289,10 +295,10 @@ fun AddToolDialog(
                         onClick = {
                             //val imageId = image.toIntOrNull() ?: 0 // Default to 0 if invalid
                             if(name.isNotBlank() && type.isNotBlank() && selectedImageUri == null)
-                                onSubmit(name, type, defaultImageUri)
+                                onSubmit(name, type, details, defaultImageUri)
 
                             if (name.isNotBlank() && type.isNotBlank() && selectedImageUri != null)
-                                onSubmit(name, type, selectedImageUri!!)
+                                onSubmit(name, type, details, selectedImageUri!!)
                         },
                         colors = ButtonDefaults.buttonColors(containerColor =  Color(0xFF348710 )),
                         modifier = Modifier.width(100.dp)

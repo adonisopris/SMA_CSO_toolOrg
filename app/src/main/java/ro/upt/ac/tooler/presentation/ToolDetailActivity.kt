@@ -1,5 +1,6 @@
 package ro.upt.ac.tooler.presentation
 
+import android.app.AlertDialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.rememberScrollableState
@@ -51,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -62,6 +64,17 @@ import com.google.android.gms.maps.model.LatLng
 import ro.upt.ac.tooler.data.database.ToolDao
 import ro.upt.ac.tooler.domain.Site
 import ro.upt.ac.tooler.domain.Tool
+import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LocationCity
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Divider
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.input.pointer.motionEventSpy
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun ToolDetail(
@@ -70,8 +83,9 @@ fun ToolDetail(
     toolDetailViewModel: ToolDetailViewModel,
     navController: NavController
 ) {
-    val tool : Tool = toolDetailViewModel.getToolById(toolId)!!
+    val tool: Tool = toolDetailViewModel.getToolById(toolId)!!
     var showAddDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     Column(
         modifier
             .fillMaxSize()
@@ -81,49 +95,222 @@ fun ToolDetail(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
 
-        Box(modifier.fillMaxWidth(),
+        Box(
+            modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
-        ){
-            Image(painter = rememberAsyncImagePainter(tool.image),
+        ) {
+            Image(
+                painter = rememberAsyncImagePainter(tool.image),
                 contentDescription = tool.name,
-                modifier.clip(RoundedCornerShape(16.dp)).heightIn(100.dp, 400.dp)//.height(400.dp)
+                modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .heightIn(100.dp, 400.dp)//.height(400.dp)
             )
         }
-        if(tool.siteId != null) {
-            Button(
-                onClick = {
-                    toolDetailViewModel.removeTool(tool)
-                    navController.popBackStack()
-                },
-                modifier = Modifier.width(400.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xffcc1f1f))
+        //Tool name
+        Text(
+            text = tool.name,
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+        Divider(
+            color = Color.Gray,
+            thickness = 10.dp,
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+        //On site..
+        val site = toolDetailViewModel.getSiteOfTool(tool)
+        Card(
+            modifier = modifier
+                .wrapContentSize(),
+            colors = CardDefaults.cardColors(containerColor = Color(0xffcedbbf)),
+            elevation = CardDefaults.cardElevation(10.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(15.dp)
             ) {
-                Text("Remove Tool from site")
+                Icon(
+                    imageVector = Icons.Default.LocationCity,
+                    contentDescription = "site",
+                    Modifier.size(50.dp)
+                )
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = 12.dp)
+                ) {
+                    Text(
+                        text = "Status",
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                    if (site != null) {
+                        Text(
+                            text = "In usage on site:  ${site.name}",
+                            fontSize = 20.sp
+                        )
+                    } else {
+                        Text(
+                            text = "Not in use",
+                            fontSize = 20.sp,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                    }
+                    if (site != null) {
+                        val formatter = SimpleDateFormat("dd.MM.yyyy")
+                        Text(
+                            text = "In usage since: ${formatter.format(tool.startDate!!) ?: "not in use"}",
+                            fontSize = 20.sp
+                        )
+                        Text(
+                            text = "In usage until: ${formatter.format(tool.endDate!!) ?: "not in use"}",
+                            fontSize = 20.sp
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        if (tool.siteId != null) {
+                            Button(
+                                onClick = {
+                                    toolDetailViewModel.removeTool(tool)
+                                    navController.popBackStack()
+                                },
+                                //modifier = Modifier.width(200.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(
+                                        0xffcc1f1f
+                                    )
+                                )
+                            ) {
+                                Text("Remove Tool")
+                            }
+                        }
+                        if (tool.siteId != null) {
+                            Button(
+                                onClick = {
+                                    showAddDialog = true
+                                },
+                                //modifier = Modifier.width(200.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(
+                                        0xFF81C784
+                                    )
+                                )
+                            ) {
+                                Text("Move Tool")
+                            }
+                        }
+
+                    }
+                }
+            }
+
+
+        }
+
+        //Details
+        if (tool.details.isNotEmpty() || tool.type.isNotEmpty()) {
+            Card(
+                modifier = modifier.wrapContentSize(),
+                colors = CardDefaults.cardColors(containerColor = Color(0xffcedbbf)),
+                elevation = CardDefaults.cardElevation(10.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(15.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = "details",
+                        Modifier.size(50.dp)
+                    )
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(vertical = 12.dp)
+                    ) {
+                        Text(text = "Type: ${tool.type}", fontSize = 30.sp, fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.CenterHorizontally))
+                        Text(text = tool.details, fontSize = 20.sp)
+                    }
+                }
             }
         }
-        if(tool.siteId != null) {
-            Button(
-                onClick = {
-                    showAddDialog = true
-                },
-                modifier = Modifier.width(400.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF81C784))
-            ) {
-                Text("Move Tool")
+
+        //Address
+        if (site != null) {
+            val address =
+                toolDetailViewModel.getAddressFromLatLng(context, site.latitude, site.longitude)
+            if (address != null) {
+                val city = address.locality ?: ""
+                val street = address.thoroughfare ?: ""
+                val name = address.featureName ?: ""
+                val number = address.subThoroughfare ?: ""
+                val country = address.countryName ?: ""
+                val adminArea = address.adminArea ?: ""
+                Card(
+                    modifier = modifier
+                        .wrapContentSize(),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xffcedbbf)),
+                    elevation = CardDefaults.cardElevation(10.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(15.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.LocationOn,
+                            contentDescription = "location",
+                            Modifier.size(50.dp)
+                        )
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(vertical = 12.dp)
+                        ) {
+                            if (street.isNotEmpty()) Text(
+                                text = "Str. $street, Nr. $number",
+                                fontSize = 20.sp
+                            )
+                            if (city.isNotEmpty()) Text(text = city, fontSize = 20.sp)
+                            if (adminArea.isNotEmpty() || country.isNotEmpty()) Text(
+                                text = "$adminArea $country",
+                                fontSize = 20.sp
+                            )
+                            if (name.isNotEmpty() && name.length > 3) Text(
+                                text = name,
+                                fontSize = 18.sp
+                            )
+                        }
+                    }
+                }
+
             }
         }
-        Text(text = tool.name, fontSize = 30.sp, fontWeight = FontWeight.Bold)
-        Text(text = tool.type, fontSize = 20.sp)
-        Text(text = "In usage on site: ${toolDetailViewModel.getSiteOfTool(tool)?.name?:"not in use"}", fontSize = 30.sp)
-        Text(text = "In usage since: ${tool.startDate?:"not in use"}", fontSize = 20.sp)
-        Text(text = "In usage until: ${tool.endDate?:"not in use"}", fontSize = 20.sp)
+
+
         if (showAddDialog) {
             toolDetailViewModel.retrieveSites()
             SelectSite(
                 toolDetailViewModel = toolDetailViewModel,
+                tool = tool,
                 onDismiss = { showAddDialog = false },
-                onSubmit = { site ->
-                    toolDetailViewModel.updateTool(site.id, tool)
+                onSubmit = { site, t ->
+                    toolDetailViewModel.updateTool(site.id, t)
                     showAddDialog = false
                 }
             )
@@ -135,12 +322,15 @@ fun ToolDetail(
 @Composable
 fun SelectSite(
     toolDetailViewModel: ToolDetailViewModel,
+    tool: Tool,
     onDismiss: () -> Unit,
-    onSubmit: (site: Site) -> Unit
+    onSubmit: (site: Site, t: Tool) -> Unit
 ) {
     val sitesListState = toolDetailViewModel.sitesListState.collectAsState()
-    var selectedSite : Site? = null
-
+    var selectedSite: Site? = null
+    var better: Tool? = null
+    val context = LocalContext.current
+    var showDialog by remember { mutableStateOf(false) }
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
@@ -154,7 +344,18 @@ fun SelectSite(
                             .fillMaxWidth()
                             .clickable {
                                 selectedSite = item
-                                onSubmit(selectedSite!!)
+                                better =
+                                    toolDetailViewModel.checkBetterSuggestion(tool, selectedSite!!)
+                                if (better != null) {
+                                    /*Toast.makeText(
+                                        context,
+                                        "There are Tools that are nearer to your place",
+                                        Toast.LENGTH_SHORT
+                                    ).show()*/
+                                    showDialog = true
+                                } else {
+                                    onSubmit(selectedSite!!, tool)
+                                }
                             }
                             .padding(8.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -162,6 +363,23 @@ fun SelectSite(
                         NewSiteListItem(site = item)
                     }
                 }
+            }
+            if (showDialog) {
+                BetterToolDialog(
+                    better!!,
+                    toolDetailViewModel,
+                    onAccept = {
+                        onSubmit(selectedSite!!, better!!)
+                        showDialog = false
+                    },
+                    onReject = {
+                        onSubmit(selectedSite!!, tool)
+                        showDialog = false
+                    },
+                    onDismiss = {
+                        showDialog = false
+                    }
+                )
             }
             /*Box(modifier = Modifier.fillMaxSize()) {
                 FloatingActionButton(
@@ -176,6 +394,62 @@ fun SelectSite(
         }
     }
 }
+
+@Composable
+fun BetterToolDialog(
+    tool: Tool,
+    toolDetailViewModel: ToolDetailViewModel,
+    onAccept: () -> Unit,
+    onReject: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 8.dp
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "There is a tool that is closer: ${tool.name}",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = "The Tool is on site: ${toolDetailViewModel.getSiteOfTool(tool)?.name}",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Button(
+                        onClick = onReject,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xffcc1f1f)),
+                        modifier = Modifier.width(100.dp)
+                    ) {
+                        Text("Reject")
+                    }
+                    Button(
+                        onClick = onAccept,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF348710)),
+                        modifier = Modifier.width(100.dp)
+                    ) {
+                        Text("Accept")
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun NewSiteListItem(

@@ -84,44 +84,7 @@ class SiteDetailViewModel (private val siteRepository: SiteRepository, private v
         tool.endDate = null
         toolRepository.updateTool(tool)
     }
-    fun checkBetterSuggestion(selectedTools: List<Int>, currentSite: Site): List<Int> {
-        val tools = toolRepository.getTools()
-        val results = FloatArray(3)
-        val betterTools = mutableListOf<Int>()
 
-        selectedTools.forEach { st ->
-            val toolST = getToolById(st)
-            val siteST = getSiteById(toolST?.siteId!!)!!
-            Location.distanceBetween(
-                    currentSite.latitude,
-                    currentSite.longitude,
-                    siteST.latitude,
-                    siteST.longitude,
-                    results
-                )
-
-            val distanceStToCurrentLocation = results[0]
-
-            tools.filter { it.type == toolST.type }.forEach { tool ->
-                val site = getSiteById(tool.siteId!!)
-                site?.let {
-                    Location.distanceBetween(
-                        currentSite.latitude,
-                        currentSite.longitude,
-                        it.latitude,
-                        it.longitude,
-                        results
-                    )
-
-                    val distanceToCurrentLocation = results[0]
-                    if (distanceToCurrentLocation < distanceStToCurrentLocation && toolST.id != it.id) {
-                        betterTools.add(tool.id)
-                    }
-                }
-            }
-        }
-        return betterTools
-    }
 
 
 }

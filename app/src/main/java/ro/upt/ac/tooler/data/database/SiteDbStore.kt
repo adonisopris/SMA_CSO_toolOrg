@@ -2,6 +2,7 @@ package ro.upt.ac.tooler.data.database
 
 import ro.upt.ac.tooler.domain.Site
 import ro.upt.ac.tooler.domain.SiteRepository
+import ro.upt.ac.tooler.domain.Tool
 
 
 class SiteDbStore (private val appDatabase: AppDatabase) : SiteRepository {
@@ -13,7 +14,16 @@ class SiteDbStore (private val appDatabase: AppDatabase) : SiteRepository {
         appDatabase.siteDao().add(site.toDbModel())
     }
 
+    private fun removeTool(tool: Tool){
+        tool.siteId = null
+        tool.startDate = null
+        tool.endDate = null
+        appDatabase.toolDao().updateTool(tool.toDbModel())
+    }
+
+
     override fun removeSite(site: Site) {
+        appDatabase.toolDao().getAll().filter { it.siteId == site.id }.forEach{removeTool(it.toDomainModel())}
         appDatabase.siteDao().delete(site.toDbModel())
     }
     override  fun getSiteById(id: Int): Site? {
@@ -32,4 +42,6 @@ class SiteDbStore (private val appDatabase: AppDatabase) : SiteRepository {
     private fun Site.toDbModel() = SiteEntity(id,name,type,latitude,longitude,details)
 
     private fun SiteEntity.toDomainModel() = Site(id,name,type,latitude,longitude,details)
+    private fun ToolEntity.toDomainModel() = Tool(id,name,type,image,details,siteId,startDate,endDate)
+    private fun Tool.toDbModel() = ToolEntity(id,name,type,image, details,siteId,startDate,endDate)
 }

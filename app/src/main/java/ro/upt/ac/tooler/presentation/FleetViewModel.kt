@@ -37,8 +37,8 @@ class FleetViewModel(private val toolRepository: ToolRepository) : ViewModel() {
         _fleetListState.value = toolRepository.getTools()
     }
 
-    fun addTool(name: String, type: String, image: Uri) {
-        toolRepository.addTool(Tool(name = name,type = type, image = image.toString()))
+    fun addTool(name: String, type: String, details:String, image: Uri) {
+        toolRepository.addTool(Tool(name = name,type = type, details = details, image = image.toString()))
         retrieveTools()
     }
 
