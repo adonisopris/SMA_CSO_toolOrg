@@ -20,6 +20,10 @@ class SitesViewModel(private val siteRepository: SiteRepository, private val sit
     private val _siteTypes =  MutableStateFlow(siteTypeRepository.getSiteTypes())
     val siteTypes : StateFlow<List<SiteType>> = _siteTypes
 
+    fun deleteAll(){
+        siteTypeRepository.deleteAll()
+    }
+
     private fun retrieveSites() {
         _sitesListState.value = siteRepository.getSites()
     }

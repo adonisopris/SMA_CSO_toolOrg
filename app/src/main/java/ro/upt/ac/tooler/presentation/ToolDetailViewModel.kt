@@ -57,6 +57,10 @@ class ToolDetailViewModel(
         val results = FloatArray(3)
         var betterTool: Tool? = null
 
+        //for a Tool that is not in use
+        if(tool.siteId == null)
+            return null
+
         val siteOfTool = tool.siteId?.let { siteRepository.getSiteById(it) }!!
         Location.distanceBetween(
             selectedSite.latitude,

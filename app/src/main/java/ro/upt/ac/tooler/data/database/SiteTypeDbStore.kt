@@ -15,6 +15,10 @@ class SiteTypeDbStore(private val appDatabase: AppDatabase) : SiteTypeRepository
     override fun removeSiteType(siteType: SiteType) {
         appDatabase.siteTypeDao().delete(siteType.toDbModel())
     }
+
+    override fun deleteAll() {
+        appDatabase.siteTypeDao().deleteAll()
+    }
     private fun SiteType.toDbModel() = SiteTypeEntity(id,name)
 
     private fun SiteTypeEntity.toDomainModel() = SiteType(id,name)

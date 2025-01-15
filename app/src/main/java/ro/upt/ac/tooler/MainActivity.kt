@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
@@ -43,6 +44,8 @@ import ro.upt.ac.tooler.data.database.RoomDatabase
 import ro.upt.ac.tooler.data.database.SiteDbStore
 import ro.upt.ac.tooler.data.database.SiteTypeDbStore
 import ro.upt.ac.tooler.data.database.ToolDbStore
+import ro.upt.ac.tooler.domain.SiteType
+import ro.upt.ac.tooler.domain.SiteTypeRepository
 import ro.upt.ac.tooler.location.LocationHandler
 import ro.upt.ac.tooler.presentation.FleetScreen
 import ro.upt.ac.tooler.presentation.FleetViewModel
@@ -68,6 +71,7 @@ class MainActivity : ComponentActivity(){
         val mapViewModel = MapViewModel(SiteDbStore(RoomDatabase.getDb(this)))
         val toolDetailViewModel = ToolDetailViewModel(ToolDbStore(RoomDatabase.getDb(this)), SiteDbStore(RoomDatabase.getDb(this)) )
         val siteDetailViewModel = SiteDetailViewModel(SiteDbStore(RoomDatabase.getDb(this)), ToolDbStore(RoomDatabase.getDb(this)) )
+        initializeSiteTypes(SiteTypeDbStore(RoomDatabase.getDb(this)))
         this.locationHandler = LocationHandler(this)
         setContent {
             MainScreen(fleetViewModel, sitesViewModel, toolDetailViewModel, siteDetailViewModel,mapViewModel, latLngState)
@@ -133,6 +137,25 @@ class MainActivity : ComponentActivity(){
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_ID = 111
+    }
+
+    private fun initializeSiteTypes(repository: SiteTypeRepository){
+        val initialSiteTypes = listOf(
+            "Construction",
+            "Demolition",
+            "Renovation",
+            "Road Construction",
+            "Residential Construction",
+            "Commercial Construction",
+            "Industrial Construction",
+            "Airport Construction",
+            "Railway Projects",
+            "Seaport Construction",
+            "Tunnel Construction",
+        )
+        if(repository.getSiteTypes().isEmpty()) {
+            initialSiteTypes.forEach { type -> repository.addSiteType(SiteType(name = type)) }
+        }
     }
 
 }
@@ -234,5 +257,5 @@ fun BottomNavigationBar(navController: NavController) {
         )
     }
 
-
 }
+

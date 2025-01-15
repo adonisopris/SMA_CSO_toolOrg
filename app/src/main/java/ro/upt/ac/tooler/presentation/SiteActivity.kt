@@ -51,6 +51,7 @@ import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -213,20 +214,6 @@ class SiteActivity :AppCompatActivity() {
         var expanded by remember { mutableStateOf(false) }
         val siteTypes by viewModel.siteTypes.collectAsState(initial = emptyList())
         val context = LocalContext.current
-        /*val initialSiteTypes = listOf(
-            "Construction",
-            "Demolition",
-            "Renovation",
-            "Road Construction",
-            "Residential Construction",
-            "Commercial Construction",
-            "Industrial Construction",
-            "Airport Construction",
-            "Railway Projects",
-            "Seaport Construction",
-            "Tunnel Construction",
-        )
-        initialSiteTypes.forEach{type ->  viewModel.addSiteType(type)}*/
 
         Dialog(onDismissRequest = onDismiss) {
             Surface(
@@ -269,7 +256,7 @@ class SiteActivity :AppCompatActivity() {
                             )
 
                             val filteredOptions =
-                                siteTypes.filter { it.name.contains(selectedType, ignoreCase = true) }
+                                siteTypes.filter { it.name.toUpperCase().contains(selectedType.toUpperCase(), ignoreCase = true) }
                             if (filteredOptions.isNotEmpty()) {
                                 ExposedDropdownMenu(
                                     expanded = expanded,

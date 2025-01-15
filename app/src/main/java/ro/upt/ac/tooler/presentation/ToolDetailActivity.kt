@@ -170,7 +170,7 @@ fun ToolDetail(
                                 Text("Remove Tool")
                             }
                         }
-                        if (tool.siteId != null) {
+                        /*if (tool.siteId != null) {*/
                             Button(
                                 onClick = {
                                     showAddDialog = true
@@ -184,7 +184,7 @@ fun ToolDetail(
                             ) {
                                 Text("Move Tool")
                             }
-                        }
+                        //}
 
                     }
                 }
