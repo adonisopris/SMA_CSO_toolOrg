@@ -3,11 +3,7 @@ package ro.upt.ac.tooler.presentation
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
-import android.location.Location
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import ro.upt.ac.tooler.domain.Site
 import ro.upt.ac.tooler.domain.SiteRepository
 import ro.upt.ac.tooler.domain.Tool

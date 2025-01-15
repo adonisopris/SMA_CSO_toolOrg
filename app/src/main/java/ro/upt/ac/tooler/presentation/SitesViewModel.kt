@@ -4,16 +4,13 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import androidx.lifecycle.ViewModel
-
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import ro.upt.ac.tooler.domain.Site
 import ro.upt.ac.tooler.domain.SiteRepository
 import ro.upt.ac.tooler.domain.SiteType
 import ro.upt.ac.tooler.domain.SiteTypeRepository
-import ro.upt.ac.tooler.domain.Tool
 import java.util.Locale
 
 class SitesViewModel(private val siteRepository: SiteRepository, private val siteTypeRepository: SiteTypeRepository): ViewModel() {

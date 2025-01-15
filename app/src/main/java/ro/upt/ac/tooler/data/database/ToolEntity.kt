@@ -13,7 +13,7 @@ import java.util.Date
             entity = SiteEntity::class,
             parentColumns = ["id"],
             childColumns = ["siteId"],
-            onDelete = ForeignKey.CASCADE //cascade delete tools when a site is deleted
+            onDelete = ForeignKey.CASCADE   //SET_NULL
         )
     ],
     indices = [Index(value = ["siteId"])]

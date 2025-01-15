@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import ro.upt.ac.tooler.domain.Site
 import ro.upt.ac.tooler.domain.SiteRepository
-import ro.upt.ac.tooler.domain.Tool
 
 class MapViewModel(private val siteRepository: SiteRepository): ViewModel(){
     private val _siteListState =  MutableStateFlow(siteRepository.getSites())

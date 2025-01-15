@@ -1,27 +1,43 @@
 package ro.upt.ac.tooler.presentation
-import androidx.compose.material.icons.filled.Delete
+
 import android.content.Context
-import android.os.Bundle
-import android.widget.Toast
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.view.LifecycleCameraController
+import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
-import androidx.compose.runtime.Composable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.filled.PhotoLibrary
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Photo
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,50 +47,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
-
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import coil.compose.rememberAsyncImagePainter
-import ro.upt.ac.tooler.data.database.RoomDatabase
-import ro.upt.ac.tooler.data.database.ToolDbStore
-import ro.upt.ac.tooler.domain.Tool
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.camera.view.LifecycleCameraController
-import androidx.camera.view.PreviewView
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.filled.Camera
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Photo
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.IconButton
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color.Companion.Red
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.key.Key.Companion.Delete
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.room.Delete
+import coil.compose.rememberAsyncImagePainter
 import ro.upt.ac.tooler.data.CameraFileUtils.takePicture
+import ro.upt.ac.tooler.domain.Tool
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -90,7 +73,7 @@ fun FleetScreen(viewModel: FleetViewModel, navController: NavController) {
     Surface(color = Color.White) {
 
         Box(modifier = Modifier.fillMaxSize()) {
-            Column (modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 // Search bar
                 TextField(
                     value = searchQuery,
@@ -132,9 +115,8 @@ fun FleetScreen(viewModel: FleetViewModel, navController: NavController) {
             }
             if (showAddDialog) {
                 AddToolDialog(
-                    navController = navController,
                     onDismiss = { showAddDialog = false },
-                    onSubmit = { name, type, details, image->
+                    onSubmit = { name, type, details, image ->
                         viewModel.addTool(name, type, details, image)
                         showAddDialog = false
                     }
@@ -171,7 +153,7 @@ fun FleetListItem(
             Image(
                 painter = rememberAsyncImagePainter(tool.image),
                 contentDescription = tool.name,
-                modifier = Modifier.size(80.dp) // Adjust size as needed
+                modifier = Modifier.size(80.dp)
             )
             Column(
                 modifier = Modifier
@@ -184,14 +166,14 @@ fun FleetListItem(
             IconButton(
                 onClick = { fleetViewModel.removeTool(tool) },
                 modifier = Modifier
-                    .size(36.dp) // Small button size
+                    .size(36.dp)
                     .padding(4.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Delete",
                     tint = Color.Red,
-                    modifier = Modifier.size(24.dp) // Smaller icon size
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
@@ -200,7 +182,6 @@ fun FleetListItem(
 
 @Composable
 fun AddToolDialog(
-    navController: NavController,
     onDismiss: () -> Unit,
     onSubmit: (name: String, type: String, details: String, image: Uri) -> Unit
 ) {
@@ -258,7 +239,7 @@ fun AddToolDialog(
                         },
                         modifier = Modifier.width(100.dp)
                     ) {
-                       // Text("Take picture")
+                        // Text("Take picture")
                         Icon(
                             imageVector = Icons.Filled.Camera,
                             contentDescription = "Camera"
@@ -269,9 +250,9 @@ fun AddToolDialog(
                     // Image Input
                     GalleryPicker(onImagePicked = { uri -> selectedImageUri = uri })
                 }
-                if(takePicture){
-                    CameraScreen (
-                        onSubmit = {item ->
+                if (takePicture) {
+                    CameraScreen(
+                        onSubmit = { item ->
                             selectedImageUri = item
                             takePicture = false
 
@@ -286,21 +267,22 @@ fun AddToolDialog(
                 ) {
                     Button(
                         onClick = onDismiss,
-                        colors = ButtonDefaults.buttonColors(containerColor =  Color(0xffcc1f1f )),
-                        modifier = Modifier.width(100.dp))
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xffcc1f1f)),
+                        modifier = Modifier.width(100.dp)
+                    )
                     {
                         Text("Cancel")
                     }
                     Button(
                         onClick = {
                             //val imageId = image.toIntOrNull() ?: 0 // Default to 0 if invalid
-                            if(name.isNotBlank() && type.isNotBlank() && selectedImageUri == null)
+                            if (name.isNotBlank() && type.isNotBlank() && selectedImageUri == null)
                                 onSubmit(name, type, details, defaultImageUri)
 
                             if (name.isNotBlank() && type.isNotBlank() && selectedImageUri != null)
                                 onSubmit(name, type, details, selectedImageUri!!)
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor =  Color(0xFF348710 )),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF348710)),
                         modifier = Modifier.width(100.dp)
                     ) {
                         Text("Add")
@@ -323,11 +305,12 @@ fun GalleryPicker(onImagePicked: (Uri) -> Unit) {
             selectedImageUri = uri
             uri?.let {
                 val savedImagePath = saveImageInAppFolder(
-                context = context,
-                uri = it,
-                folderName = "AppImages",
-                fileName = "image_${UUID.randomUUID()}.jpg")
-                savedImagePath?.let{path -> onImagePicked(path.toUri())}
+                    context = context,
+                    uri = it,
+                    folderName = "AppImages",
+                    fileName = "image_${UUID.randomUUID()}.jpg"
+                )
+                savedImagePath?.let { path -> onImagePicked(path.toUri()) }
             }
         }
     )
@@ -344,7 +327,12 @@ fun GalleryPicker(onImagePicked: (Uri) -> Unit) {
     }*/
 }
 
-fun saveImageInAppFolder(context: Context, uri: Uri, folderName: String, fileName: String): String? {
+fun saveImageInAppFolder(
+    context: Context,
+    uri: Uri,
+    folderName: String,
+    fileName: String
+): String? {
     // Create a folder inside the app's internal storage
     val folder = File(context.filesDir, folderName)
     if (!folder.exists()) {
@@ -360,63 +348,53 @@ fun saveImageInAppFolder(context: Context, uri: Uri, folderName: String, fileNam
         }
     }
 
-    return file.absolutePath // Return the saved image's file path
+    return file.absolutePath //image path
 }
 
 @Composable
-fun CameraScreen(onSubmit: (image: Uri)->Unit) {
+fun CameraScreen(onSubmit: (image: Uri) -> Unit) {
     val context = LocalContext.current
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
-    // Executor for background tasks, specifically for taking pictures in this context
-    val executor = remember { Executors.newSingleThreadExecutor() }
-    // State to hold the URI of the captured image. Initially null, updated after image capture
-    val capturedImageUri = remember { mutableStateOf<Uri?>(null) }
 
-    // Camera controller tied to the lifecycle of this composable
+    val executor = remember { Executors.newSingleThreadExecutor() }
+    val capturedImageUri = remember { mutableStateOf<Uri?>(null) }
     val cameraController = remember {
         LifecycleCameraController(context).apply {
-            bindToLifecycle(lifecycleOwner) // Binds the camera to the lifecycle of the lifecycleOwner
+            bindToLifecycle(lifecycleOwner)
         }
     }
     Box {
-            // PreviewView for the camera feed. Configured to fill the screen and display the camera output
-            AndroidView(
-                modifier = Modifier.fillMaxSize(),
-                factory = { ctx ->
-                    PreviewView(ctx).apply {
-                        scaleType = PreviewView.ScaleType.FILL_START
-                        implementationMode = PreviewView.ImplementationMode.COMPATIBLE
-                        controller =
-                            cameraController // Attach the lifecycle-aware camera controller.
-                    }
-                },
-                onRelease = {
-                    // Called when the PreviewView is removed from the composable hierarchy
-                    cameraController.unbind() // Unbinds the camera to free up resources
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = { ctx ->
+                PreviewView(ctx).apply {
+                    scaleType = PreviewView.ScaleType.FILL_START
+                    implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                    controller =
+                        cameraController
                 }
-            )
-
-            // Button that triggers the image capture process
-            Button(
-                onClick = {
-                    // Calls a utility function to take a picture, handling success and error scenarios
-                    takePicture(
-                        cameraController, context, executor,
-                        { uri ->
-                            capturedImageUri.value =
-                                uri // Update state with the URI of the captured image on success
-                            onSubmit(uri)
-                        },
-                        { exception ->
-                            // Error handling logic for image capture failures
-                        },
-                    )
-
-                },
-                modifier = Modifier.align(Alignment.BottomCenter)
-            ) {
-                Text(text = "Take Picture")
+            },
+            onRelease = {
+                cameraController.unbind()
             }
+        )
+
+        Button(
+            onClick = {
+                takePicture(
+                    cameraController, context, executor,
+                    { uri ->
+                        capturedImageUri.value = uri
+                        onSubmit(uri)
+                    },
+                    { exception -> },
+                )
+
+            },
+            modifier = Modifier.align(Alignment.BottomCenter)
+        ) {
+            Text(text = "Take Picture")
+        }
     }
 }
 

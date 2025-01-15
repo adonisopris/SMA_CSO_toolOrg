@@ -1,9 +1,7 @@
 package ro.upt.ac.tooler.data.database
 
-import ro.upt.ac.tooler.domain.Site
 import ro.upt.ac.tooler.domain.SiteType
 import ro.upt.ac.tooler.domain.SiteTypeRepository
-import ro.upt.ac.tooler.domain.Tool
 
 class SiteTypeDbStore(private val appDatabase: AppDatabase) : SiteTypeRepository {
     override fun getSiteTypes(): List<SiteType> {

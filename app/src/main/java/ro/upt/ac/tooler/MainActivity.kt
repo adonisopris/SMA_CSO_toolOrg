@@ -1,15 +1,12 @@
 package ro.upt.ac.tooler
 
 import android.Manifest.permission
-import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -32,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -47,20 +43,17 @@ import ro.upt.ac.tooler.data.database.RoomDatabase
 import ro.upt.ac.tooler.data.database.SiteDbStore
 import ro.upt.ac.tooler.data.database.SiteTypeDbStore
 import ro.upt.ac.tooler.data.database.ToolDbStore
-import ro.upt.ac.tooler.domain.Tool
-import ro.upt.ac.tooler.presentation.CameraScreen
+import ro.upt.ac.tooler.location.LocationHandler
 import ro.upt.ac.tooler.presentation.FleetScreen
 import ro.upt.ac.tooler.presentation.FleetViewModel
-import ro.upt.ac.tooler.presentation.SiteDetail
-import ro.upt.ac.tooler.presentation.SiteDetailViewModel
-
-import ro.upt.ac.tooler.presentation.SitesViewModel
-import ro.upt.ac.tooler.presentation.ToolDetail
-import ro.upt.ac.tooler.presentation.ToolDetailViewModel
-import ro.upt.ac.tooler.location.LocationHandler
 import ro.upt.ac.tooler.presentation.MapActivity
 import ro.upt.ac.tooler.presentation.MapViewModel
 import ro.upt.ac.tooler.presentation.SiteActivity
+import ro.upt.ac.tooler.presentation.SiteDetail
+import ro.upt.ac.tooler.presentation.SiteDetailViewModel
+import ro.upt.ac.tooler.presentation.SitesViewModel
+import ro.upt.ac.tooler.presentation.ToolDetail
+import ro.upt.ac.tooler.presentation.ToolDetailViewModel
 
 class MainActivity : ComponentActivity(){
 
